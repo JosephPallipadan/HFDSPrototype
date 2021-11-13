@@ -2,14 +2,42 @@
 loader = new PIXI.Loader();
 
 // Chainable `add` to enqueue a resource
-loader.add('road', 'road-edited.png').add('bush', 'bush.png');
+loader
+.add('exterior', 'images/exterior.png')
+.add('interior', 'images/interior.png')
+.add('treeLeft', 'images/tree-left.png')
+.add('treeRight', 'images/tree-right.png')
+.add('pole', 'images/pole.png')
+.add('hand', 'images/hand.png');
+
 
 // The `load` method loads the queue of resources, and calls the passed in callback called once all
 // resources have loaded.
 loader.load(onAssetsLoaded);
 
-function onAssetsLoaded(resources) {
-    console.log(resources);
+function onAssetsLoaded({resources}) {
+    const app = new PIXI.Application({ width: 1024, height: 640 });
+    document.body.appendChild(app.view);
+
+    const exterior = PIXI.Sprite.from(resources.exterior.url);
+    const interior = PIXI.Sprite.from(resources.interior.url);
+    const treeLeft = PIXI.Sprite.from(resources.treeLeft.url);
+    const treeRight = PIXI.Sprite.from(resources.treeRight.url);
+    const pole = PIXI.Sprite.from(resources.pole.url);
+    const hand = PIXI.Sprite.from(resources.hand.url);
+
+    [exterior, interior, treeLeft, treeRight, pole, hand].forEach((sprite) => {
+        sprite.scale.x = 0.5;
+        sprite.scale.y = 0.5;
+    });
+
+    interior.y = exterior.height - interior.height; 
+
+    app.stage.addChild(exterior);
+    app.stage.addChild(interior);
+}
+
+function legacy(resources) {
     // Create the application helper and add its render target to the page
     let app = new PIXI.Application({ width: 799, height: window.innerHeight / 2 });
     document.body.appendChild(app.view);
