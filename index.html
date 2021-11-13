@@ -6,19 +6,21 @@
   <body>
     <script>
       // Create the application helper and add its render target to the page
-      let app = new PIXI.Application({ width: window.innerWidth, height: window.innerHeight });
+      let app = new PIXI.Application({ width: 799, height: window.innerHeight / 2 });
       document.body.appendChild(app.view);
 
-      // Create the sprite and add it to the stage
-      let sprite = PIXI.Sprite.from('sample.png');
-      app.stage.addChild(sprite);
+      const texture = PIXI.Texture.from('bush.png');
+      const leftBush = new PIXI.Sprite(texture);
+      leftBush.width = 100;
+      leftBush.height = 100;
+      // const rightBush = new PIXI.Sprite(texture);
+      app.stage.addChild(leftBush);
+      // motionEffectContainer.addChild(rightBush);
 
-      // Add a ticker callback to move the sprite back and forth
-      let elapsed = 0.0;
-      app.ticker.add((delta) => {
-        elapsed += delta;
-        sprite.x = 100.0 + Math.cos(elapsed/50.0) * 100.0;
-      });
+      // Create the sprite and add it to the stage
+      let sprite = PIXI.Sprite.from('road-edited.png');
+      app.stage.addChild(sprite);
+      sprite.y = 100;
     </script>
   </body>
 </html>
