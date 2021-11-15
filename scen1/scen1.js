@@ -56,7 +56,7 @@ function onAssetsLoaded({resources}) {
     });
 
     interior.y = exterior.height - interior.height;
-    
+
     hand.x = 112;
     hand.y = 504;
 
@@ -81,7 +81,7 @@ function onAssetsLoaded({resources}) {
 
     const numberOfPoles = 3;
     const poleSpacingX = 200;
-    const poleStartX = 470; 
+    const poleStartX = 470;
     const poleY = (x) => 0.35 * x + 180 * scale;
     const poles = [...Array(numberOfPoles)].map((_, i) => {
         const pole = PIXI.Sprite.from(resources.pole.url);
@@ -89,7 +89,7 @@ function onAssetsLoaded({resources}) {
         pole.y = poleY(pole.x);
         return pole;
     });
-    
+
     const speedIndicator = new PIXI.Text('70 MPH', textStyle);
     let speedValue = 70;
     speedIndicator.x = 235;
@@ -186,7 +186,7 @@ function onAssetsLoaded({resources}) {
             inattentionTimer = 20;
         }
     });
-    
+
 
     app.stage.addChild(exterior);
     app.stage.addChild(treeLeft);
@@ -200,7 +200,7 @@ function onAssetsLoaded({resources}) {
     app.stage.addChild(activateHFDSButton)
     app.stage.addChild(hand);
     app.stage.addChild(viewPort);
-    
+
 
     let speed = 30;
     app.ticker.add((delta) => {
@@ -317,7 +317,7 @@ function legacy(resources) {
     const speed = 32;
     app.ticker.add((delta) => {
         leftBush.y += delta * 0.1 * speed;
-        leftBush.x -= delta * 0.29 * speed; 
+        leftBush.x -= delta * 0.29 * speed;
 
         rightBush.y += delta * 0.1 * speed;
         rightBush.x += delta * 0.29 * speed;
@@ -344,7 +344,7 @@ function legacy(resources) {
             rightBush.y = rightBushStartY;
         }
 
-        
+
         if (roadCutterLeft1.y > roadSprite.y + roadSprite.height) {
             roadCutterLeft1.x = roadCutterLeft1Start.x;
             roadCutterLeft1.y = roadCutterLeft1Start.y;
