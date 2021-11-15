@@ -141,7 +141,7 @@ function update(time, delta)
     this.malfunctionDot.x = this.radar.x - (otherCar.x - this.player.x) / 10;
     this.otherCarDot.y = this.malfunctionDot.y = this.radar.y + (otherCar.y - this.player.y) / 25;
 
-    if (timers.malfunction >= 10) {
+    if (timers.malfunction >= 15) {
         timers.malfunction = 0;
         if (this.hfdsEnabled) {
             addLog.call(this, "Radar Fault Detected...");

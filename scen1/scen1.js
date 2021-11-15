@@ -33,7 +33,6 @@ const activateStyle = new PIXI.TextStyle({
     fill: ['#ffffff', '#00ff99'].reverse(), // gradient
 });
 
-
 // The `load` method loads the queue of resources, and calls the passed in callback called once all
 // resources have loaded.
 loader.load(onAssetsLoaded);
@@ -115,6 +114,7 @@ function onAssetsLoaded({resources}) {
         hfdsEnabled = !hfdsEnabled;
         hand.visible = !hfdsEnabled;
         viewPort.visible = hfdsEnabled;
+        activityIndicator.text = `HFDS\n${hfdsEnabled ? '' : 'IN'}ACTIVE`
     });
 
     const viewPort = new PIXI.Graphics();
@@ -170,15 +170,25 @@ function onAssetsLoaded({resources}) {
     activityIndicator.y = 500;
 
     let inattentionTimer = 20;
+    const payAttentionAudio = new Audio("payattention.mp3");
+    const stopAudio = new Audio("vehiclestop.mp3");
+    let stopAudioPlayed = false;
     app.ticker.add((delta) => {
-        if (!isAttentive()) {
-            inattentionTimer -= delta * 0.05;
+        if (!isAttentive() || !activityIndicator.visible) {
+            inattentionTimer -= delta * 0.025;
             activityIndicator.text = `${Math.ceil(inattentionTimer % 5)}`;
             if (inattentionTimer <= 5) {
+                console.log(speed);
+                if(!stopAudioPlayed) stopAudio.play();
+                activateHFDSButton.visible = false;
+                activityIndicator.visible = false;
+                stopAudioPlayed = true;
                 speed = Math.max(0, speed - delta * 0.05);
                 alertButton.tint = 0xFF0000;
             } else if (inattentionTimer <= 10) {
                 alertButton.tint = 0xFF0000;
+                payAttentionAudio.play();
+
             } else if (inattentionTimer <= 15) {
                 alertButton.tint = 0x00FF00;
             }
