@@ -29,6 +29,7 @@ function preload ()
 {
     this.load.image('road', 'road.png');
     this.load.image('player', 'player.png');
+    this.load.image('radar', 'radar.png');
 }
 
 function create ()
@@ -48,19 +49,28 @@ function create ()
     this.otherCar.setTint(0xfffff);
     this.otherCar.setRotation(-Math.PI / 2);
 
+    this.radar = this.add.image(90, 150, 'radar');
+    this.radar.setScale(0.5);
+
+    this.otherCarDot = this.add.circle(80, 150, 5, 0xff0000);
+    this.malfunctionDot = this.add.circle(80, 150, 5, 0xff0000);
+    this.malfunctionDot.visible = false;
+
     this.cursors = this.input.keyboard.createCursorKeys();
 
     this.camera = this.cameras.main;
 
     this.logs = [];
 
-    this.activateButton = this.add.text(25, 10, 'Deactivate\nHFDS', { fontSize: '20px', fill: '#0f0', fontFamily: 'Arial' });
+
+    this.hfdsEnabled = false;
+    this.hfdsEnabled = true;
+
+    this.activateButton = this.add.text(25, 10, `${this.hfdsEnabled ? 'Deactivate' : 'Activate'}\nHFDS`, { fontSize: '20px', fill: '#0f0', fontFamily: 'Arial' });
     this.activateButton.setInteractive()
     .on('pointerdown', () => handleHFDSClick.call(this) )
     .on('pointerover', () => this.activateButton.setStyle({ fill: '#ff0'}) )
     .on('pointerout', () => this.activateButton.setStyle({ fill: '#0f0' }) );
-
-    this.hfdsEnabled = true;
 
     if (this.hfdsEnabled) activateHFDS.call(this);
 }
@@ -102,6 +112,8 @@ function update(time, delta)
         this.player.y -= offset;
         this.logs.forEach(log => log.y -= offset);
         this.activateButton.y -= offset;
+        this.radar.y -= offset;
+        // this.otherCarDot.y -= offset;
     };
 
     if (cursors.up.isDown || this.hfdsEnabled)
@@ -118,10 +130,25 @@ function update(time, delta)
     const otherCar = this.otherCar;
     otherCar.y -= offset * 2;
     Object.keys(timers).forEach((key) => timers[key] += delta / 1000);
+
     if (timers.otherCar >= 5 && !this.camera.worldView.contains(otherCar.x, otherCar.y + 100)) {
         otherCar.y = this.player.y + 500;
         otherCar.x = lanePositions[Math.random() < 0.5 ? 0 : 1] + 60;
         timers.otherCar = 0;
+    }
+
+    this.otherCarDot.x = this.radar.x + (otherCar.x - this.player.x) / 10;
+    this.malfunctionDot.x = this.radar.x - (otherCar.x - this.player.x) / 10;
+    this.otherCarDot.y = this.malfunctionDot.y = this.radar.y + (otherCar.y - this.player.y) / 25;
+
+    if (timers.malfunction >= 10) {
+        timers.malfunction = 0;
+        if (this.hfdsEnabled) {
+            addLog.call(this, "Radar Fault Detected...");
+            this.malfunctionDot.visible = true;
+            setTimeout(() => this.malfunctionDot.visible = false, 2000);
+            deactivateHFDS.call(this);
+        }
     }
 }
 
