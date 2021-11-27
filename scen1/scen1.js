@@ -114,7 +114,7 @@ function onAssetsLoaded({resources}) {
         hfdsEnabled = !hfdsEnabled;
         hand.visible = !hfdsEnabled;
         viewPort.visible = hfdsEnabled;
-        activityIndicator.text = `HFDS\n${hfdsEnabled ? '' : 'IN'}ACTIVE`
+        activityIndicator.text = `HFDS\n${hfdsEnabled ? '' : 'IN'}ACTIVE`;
     });
 
     const viewPort = new PIXI.Graphics();
@@ -194,6 +194,8 @@ function onAssetsLoaded({resources}) {
             }
         } else {
             inattentionTimer = 20;
+            activityIndicator.text = `HFDS\n${hfdsEnabled ? '' : 'IN'}ACTIVE`;
+            alertButton.tint = 0x000000;
         }
     });
 

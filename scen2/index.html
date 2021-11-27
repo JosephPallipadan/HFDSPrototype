@@ -5,19 +5,24 @@
 </head>
 <body>
     <script src="./game.js"></script>
-    <ul>
-        <li>
-          The system has HFDS activated by default
-        </li>
-        <li>
-          Any input from the driver will deactivate the system, so using the arrow keys will switch the system to
-          manual mode.
-        </li>
-        <li>
-          A sensor failure is simulated at certain intervals which can be seen when the radar in the top left displays two
-          dots instead of one. When this happens, the system again switches to manual mode.
-        </li>
-      </ul>
+    <iframe id="video" width="756" height="491">
+    </iframe>
+
+    <h5 id="scenario-description">
+      
+    </h5>
+
+    <script>
+      const scen2 = "Scenario Two: Consider at least one system failure. For example, the Path Prediction System does not have proper mapping (i.e. construction zones), or the vehicle’s radar, camera, or GPS sensors detect a fault. What is the fail-safe state the system should revert to?";
+      const scen4 = "Scenario Four: Demonstrate how the system responds when there is a change of control back and forth between the driver and HDFS.";
+
+      const vid1 = "rY6AuEMU5FM";
+      const vid2 = "lT073-H0npk";
+
+      const isScen2 = localStorage.getItem("isScen2") === "True";
+      document.getElementById("scenario-description").textContent = isScen2 ? scen2 : scen4;
+      document.getElementById("video").setAttribute('src', `https://www.youtube.com/embed/${isScen2 ? vid1 : vid2}`);
+    </script>
     <div id="phaser-parent"></div>
 </body>
 </html>

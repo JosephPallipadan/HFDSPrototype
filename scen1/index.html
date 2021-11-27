@@ -5,18 +5,23 @@
   </head>
   <body>
     <script src="./scen1.js"></script>
-    <ul>
-      <li>
-        Click on toggle hfds to activate
-      </li>
-      <li>
-        The red rectangle represents the view of the driver.
-      </li>
-      <li>
-        It can be manipulated with the arrow keys and if it is deemed to be not focusing on the road,
-        the warning system will activate, with more sever warnings every 5 seconds
-      </li>
-    </ul>
-    
+    <iframe id="video" width="756" height="491">
+    </iframe>
+
+    <h5 id="scenario-description">
+      
+    </h5>
+
+    <script>
+      const scen1 = "Scenario One: System is fully operational with proper road conditions. Demonstrate a user activating the system on a supported highway. Demonstrate how the system issues warnings with the Driver Attention System.";
+      const scen3 = "Scenario Three: When assisted driving is engaged, demonstrate how the system responds if the driver becomes continuously/permanently disengaged with the road.";
+
+      const vid1 = "4S9QfgnALBs";
+      const vid2 = "DRZEpnsBEoA";
+
+      const isScen1 = localStorage.getItem("isScen1") === "True";
+      document.getElementById("scenario-description").textContent = isScen1 ? scen1 : scen3;
+      document.getElementById("video").setAttribute('src', `https://www.youtube.com/embed/${isScen1 ? vid1 : vid2}`);
+    </script>
   </body>
 </html>
