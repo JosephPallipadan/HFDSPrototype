@@ -62,15 +62,30 @@ function create ()
 
     this.logs = [];
 
-
-    this.hfdsEnabled = false;
     this.hfdsEnabled = true;
+    this.isOnHigherSpeed = false;
 
-    this.activateButton = this.add.text(25, 10, `${this.hfdsEnabled ? 'Deactivate' : 'Activate'}\nHFDS`, { fontSize: '20px', fill: '#0f0', fontFamily: 'Arial' });
+    this.activateButton = this.add.text(5, 10, `${this.hfdsEnabled ? 'Deactivate' : 'Activate'} HFDS`, { fontSize: '20px', fill: '#0f0', fontFamily: 'Arial' });
     this.activateButton.setInteractive()
     .on('pointerdown', () => handleHFDSClick.call(this) )
     .on('pointerover', () => this.activateButton.setStyle({ fill: '#ff0'}) )
     .on('pointerout', () => this.activateButton.setStyle({ fill: '#0f0' }) );
+
+    this.speedChangeButton = this.add.text(5, 250, 'High Speed Setting', { fontSize: '20px', fill: '#0f0', fontFamily: 'Arial' });
+    this.speedChangeButton.setInteractive()
+    .on('pointerover', () => this.speedChangeButton.setStyle({ fill: '#ff0'}) )
+    .on('pointerout', () => this.speedChangeButton.setStyle({ fill: '#0f0' }) )
+    .on('pointerdown', () => {
+        this.isOnHigherSpeed  = !this.isOnHigherSpeed;
+        this.speedChangeButton.text = `${this.isOnHigherSpeed ? 'Low Speed Setting' : 'High Speed Setting'}`;
+    });
+
+    this.simulateRadarFaultButton = this.add.text(5, 280, `Simulate Fault`, { fontSize: '20px', fill: '#0f0', fontFamily: 'Arial' });
+    this.simulateRadarFaultButton.setInteractive()
+    .on('pointerdown', () => simulateRadarFault.call(this) )
+    .on('pointerover', () => this.simulateRadarFaultButton.setStyle({ fill: '#ff0'}) )
+    .on('pointerout', () => this.simulateRadarFaultButton.setStyle({ fill: '#0f0' }) );
+    
 
     if (this.hfdsEnabled) activateHFDS.call(this);
 }
@@ -82,20 +97,20 @@ function handleHFDSClick() {
 
 function activateHFDS() {
     this.hfdsEnabled = true;
-    this.activateButton.text = "Deactivate\nHFDS";
+    this.activateButton.text = "Deactivate HFDS";
     addLog.call(this, "System Activated");
 }
 
 function deactivateHFDS() {
     this.hfdsEnabled = false;
-    this.activateButton.text = "Activate\nHFDS";
+    this.activateButton.text = "Activate HFDS";
     addLog.call(this, "System Deactivated");
 }
 
 function update(time, delta)
 {
     const cursors = this.cursors;
-    const offset = 100 * delta / 1000;
+    const offset = (this.isOnHigherSpeed ? 200 : 100) * delta / 1000;
 
     if (cursors.left.isDown)
     {
@@ -113,6 +128,8 @@ function update(time, delta)
         this.logs.forEach(log => log.y -= offset);
         this.activateButton.y -= offset;
         this.radar.y -= offset;
+        this.speedChangeButton.y -= offset;
+        this.simulateRadarFaultButton.y -= offset;
         // this.otherCarDot.y -= offset;
     };
 
@@ -128,7 +145,7 @@ function update(time, delta)
     fixRoads.call(this);
 
     const otherCar = this.otherCar;
-    otherCar.y -= offset * 2;
+    otherCar.y -= offset + 1;
     Object.keys(timers).forEach((key) => timers[key] += delta / 1000);
 
     if (timers.otherCar >= 5 && !this.camera.worldView.contains(otherCar.x, otherCar.y + 100)) {
@@ -141,14 +158,18 @@ function update(time, delta)
     this.malfunctionDot.x = this.radar.x - (otherCar.x - this.player.x) / 10;
     this.otherCarDot.y = this.malfunctionDot.y = this.radar.y + (otherCar.y - this.player.y) / 25;
 
-    if (timers.malfunction >= 15) {
-        timers.malfunction = 0;
-        if (this.hfdsEnabled) {
-            addLog.call(this, "Radar Fault Detected...");
-            this.malfunctionDot.visible = true;
-            setTimeout(() => this.malfunctionDot.visible = false, 2000);
-            deactivateHFDS.call(this);
-        }
+    // if (timers.malfunction >= 15) {
+    //     timers.malfunction = 0;
+    //     simulateRadarFault.call(this);
+    // }
+}
+
+function simulateRadarFault() {
+    if (this.hfdsEnabled) {
+        addLog.call(this, "Radar Fault Detected...");
+        this.malfunctionDot.visible = true;
+        setTimeout(() => this.malfunctionDot.visible = false, 2000);
+        deactivateHFDS.call(this);
     }
 }
 
